@@ -1,16 +1,36 @@
 package com.eddanp.universidad.modelo.entidades;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
+@Entity
+@Table(name = "pabellon")
 public class Pabellon implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "metros_cuadrados")
     private double mts2;
+    @Column(name = "nombre_pabellon", unique = true, nullable = false)
     private String nombre;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "codigoPostal", column = @Column(name = "codigo_postal")),
+            @AttributeOverride(name = "dpto", column = @Column(name = "departamento"))
+    })
     private Direccion direccion;
+    @Column(name = "fecha_alta")
     private LocalDateTime fechaAlta;
+    @Column(name = "fecha_modificacion")
     private LocalDateTime fechaModificacion;
+    @OneToMany(
+            mappedBy = "pabellon",
+            fetch = FetchType.LAZY
+    )
+    private Set<Aula> aulas;
 
     public Pabellon() {
     }
@@ -68,6 +88,24 @@ public class Pabellon implements Serializable {
 
     public void setFechaModificacion(LocalDateTime fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
+    }
+
+    public Set<Aula> getAulas() {
+        return aulas;
+    }
+
+    public void setAulas(Set<Aula> aulas) {
+        this.aulas = aulas;
+    }
+
+    @PrePersist
+    private void antesDePersistir(){
+        this.fechaAlta=LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void antesDeUpdate(){
+        this.fechaModificacion=LocalDateTime.now();
     }
 
     @Override

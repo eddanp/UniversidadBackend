@@ -1,7 +1,8 @@
 package com.eddanp.universidad.modelo.entidades;
 
+import javax.persistence.Embeddable;
 import java.io.Serializable;
-
+@Embeddable
 public class Direccion implements Serializable {
 
     private String calle;

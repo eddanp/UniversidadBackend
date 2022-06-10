@@ -1,25 +1,34 @@
-package com.eddanp.universidad.modelo.entidades.enumeradores;
+package com.eddanp.universidad.modelo.entidades;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
+@Entity
+@Table(name = "carrera")
 public class Carrera implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "nombre_carrera", length = 80, unique = true)
     private String nombre;
+    @Column(name = "cantidad_materias")
     private Integer cantidadMaterias;
-    private Integer canidadAnios;
+    @Column(name = "cantidad_anios")
+    private Integer cantidadAnios;
+    @Column(name = "fecha_alta")
     private LocalDateTime fechaAlta;
+    @Column(name = "fecha_modificacion")
     private LocalDateTime fechaModificacion;
 
     public Carrera() {
     }
 
-    public Carrera(Integer id, String nombre, Integer cantidadMaterias, Integer canidadAnios) {
+    public Carrera(Integer id, String nombre, Integer cantidadMaterias, Integer cantidadAnios) {
         this.id = id;
         this.nombre = nombre;
         this.cantidadMaterias = cantidadMaterias;
-        this.canidadAnios = canidadAnios;
+        this.cantidadAnios = cantidadAnios;
     }
 
     public Integer getId() {
@@ -46,12 +55,12 @@ public class Carrera implements Serializable {
         this.cantidadMaterias = cantidadMaterias;
     }
 
-    public Integer getCanidadAnios() {
-        return canidadAnios;
+    public Integer getCantidadAnios() {
+        return cantidadAnios;
     }
 
-    public void setCanidadAnios(Integer canidadAnios) {
-        this.canidadAnios = canidadAnios;
+    public void setCantidadAnios(Integer cantidadAnios) {
+        this.cantidadAnios = cantidadAnios;
     }
 
     public LocalDateTime getFechaAlta() {
@@ -70,13 +79,23 @@ public class Carrera implements Serializable {
         this.fechaModificacion = fechaModificacion;
     }
 
+    @PrePersist
+    private void antesDePersistir(){
+        this.fechaAlta=LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void antesDeUpdate(){
+        this.fechaModificacion=LocalDateTime.now();
+    }
+
     @Override
     public String toString() {
         return "Carrera{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", cantidadMaterias=" + cantidadMaterias +
-                ", canidadAnios=" + canidadAnios +
+                ", cantidadAnios=" + cantidadAnios +
                 ", fechaAlta=" + fechaAlta +
                 ", fechaModificacion=" + fechaModificacion +
                 '}';
